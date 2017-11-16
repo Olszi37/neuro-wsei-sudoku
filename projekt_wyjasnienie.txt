@@ -1,0 +1,37 @@
+Konfiguracja
+
+1. Instalujemy conde
+2. tworzymy środowisko z wymaganym python 2.7: conda create --name nazwa_srodowiska python=2
+3. instalujemy OpenCV: conda install -c menpo opencv
+4. Instalujemy sklearn: conda install scikit-learn
+5. Instalujemy skimage: conda install scikit-image
+
+6. Odpalamy apke: python sudoku.py test/sudoku_1.jpg  -- mozna wstawić inna sciezke z testowym sudoku
+
+Ogólny przebieg apki:
+1. Wczytanie zdjęcia (sudokuExtractor: 26)
+2. Obróbka zdjęcia (sudokuExtractor: 33)
+    - skala szarości
+    - threshloding (wybicie granic czarne i białe)
+3. Wyciągnięcie siatki sudoku: (sudokuExtractor: 42)
+    - wyciągniecie sudoku
+    - "wyprostowanie" sudoku ze zdjęcia
+4. Wyciągniecie pojedynczych puzzli sudoku (cells: 31)
+    - wyciagniecie i powiekszenie komorki dla sieci neuronowej
+    - wyczyszczenie szumów
+    - algorytm 1: rozpoznanie liczby lub pustego znaku
+    - jesli liczba:
+        - algorytm 2: rozpoznanie liczby
+    - jesli nie:
+        - zwróc . jako puste pole
+5. Zwrócenie stringa z ciągiem liczb i próba rozwiązania sudoku
+    - algorytm sudoku - sudoku_str.py
+    - rozwiazanie sudoku (sudoku: 44 -> sudoku_str: 39)
+
+Usprawnienia:
+    - podszkolić sieć rozpoznawania cyfr pisanych, albo bawić się thresholdingiem do
+    pożądancyh efektów
+    - nie wiem juz sam
+
+Problemy:
+    - algorytm nie rozpoznaje liczb poprawnie, albo widzi je tam gdzie ich nie ma
