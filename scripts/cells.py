@@ -51,18 +51,20 @@ class Cells(object):
                 # row.append(digit)
                 # # self.helpers.show(digit, 'After centering')
 
-                self.helpers.show(cell, 'Before clean')
-                cell = self.clean(cell)  # wyczyszczenie szumow
-                self.helpers.show(cell, 'After clean')
-                pre_digit = Digit(cell).digit  # zmienna dla rozpoznawania liczb/pustych znakow dla 1 algorytmu
+                # self.helpers.show(cell, 'Before clean')
+                cell_1 = self.clean_1(cell)  # wyczyszczenie szumow
+                self.helpers.show(cell_1, 'After clean_1')
+                pre_digit = Digit(cell_1).digit  # zmienna dla rozpoznawania liczb/pustych znakow dla 1 algorytmu
                 pre_digit = self.centerDigit(pre_digit)  # wycentrowanie liczby
-                x = net.feedforward(np.reshape(cell, (784, 1)))  # rozpoznanie - 1 algorytm
+                x = net.feedforward(np.reshape(cell_1, (784, 1)))  # rozpoznanie - 1 algorytm
                 x[0] = 0
                 maybe_digit = np.argmax(x)
 
-                if list(x[maybe_digit])[0] / sum(x) > 0.9:  # czy nie pusta komorka
+                if list(x[maybe_digit])[0] / sum(x) > 0.8:  # czy nie pusta komorka
                     # cell = cv2.dilate(cell, (3, 3))
                     # rozpoznawanie liczb pisanych, 2 algorytm
+                    cell = self.clean_2(cell)
+                    self.helpers.show(cell, 'After clean_2')
                     cell_hog = hog(cell, orientations=9, pixels_per_cell=(14, 14),
                                    cells_per_block=(1, 1), visualise=False)
                     cell_hog = pp.transform(np.array([cell_hog], 'float64'))
@@ -75,13 +77,24 @@ class Cells(object):
             i += 1
         return cells
 
-    def clean(self, cell):
+    def clean_1(self, cell):
         contour = self.helpers.largestContour(cell.copy())
         x, y, w, h = cv2.boundingRect(contour)
         cell = self.helpers.make_it_square(cell[y:y + h, x:x + w], 28)
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
         cell = cv2.morphologyEx(cell, cv2.MORPH_CLOSE, kernel)
         cell = 255 * (cell / 130)
+        return cell
+
+    def clean_2(self, cell):
+        contour = self.helpers.largestContour(cell.copy())
+        x, y, w, h = cv2.boundingRect(contour)
+        cell = self.helpers.make_it_square(cell[y:y + h, x:x + w], 28)
+        self.helpers.show(cell, "after cropping")
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
+        # cell = cv2.dilate(cell, kernel, iterations=1)
+        cell = cv2.morphologyEx(cell, cv2.MORPH_OPEN, kernel)
+        # cell = 255 * (cell / 130)
         return cell
 
     def centerDigit(self, digit):
