@@ -20,7 +20,7 @@ class Cells(object):
         print "Loading recognition libraries...",
         clf, pp = joblib.load(os.path.abspath("scripts\\digits_cls.pkl"))
 
-        sizes, biases, wts = joblib.load(os.path.abspath("networks\\net"))
+        sizes, biases, wts = pickle.load(open('networks\\net', 'r'))
         net = NeuralNetwork(customValues=(sizes, biases, wts))
         print 'done.'
 
@@ -43,26 +43,11 @@ class Cells(object):
                 # powiekszenie komorki (28x28) dla sieci neuronowej do poznania
                 cell = self.helpers.make_it_square(cell, 28)
 
-                # self.helpers.show(cell, 'Before clean')
-                # cell = self.clean(cell)
-                # digit = Digit(cell).digit
-                # # self.helpers.show(digit, 'After clean')
-                # digit = self.centerDigit(digit)
-                # row.append(digit)
-                # # self.helpers.show(digit, 'After centering')
-
-                # self.helpers.show(cell, 'Before clean')
                 cell_1 = self.clean_1(cell)  # wyczyszczenie szumow
-                self.helpers.show(cell_1, 'After clean_1')
-                pre_digit = Digit(cell_1).digit  # zmienna dla rozpoznawania liczb/pustych znakow dla 1 algorytmu
-                pre_digit = self.centerDigit(pre_digit)  # wycentrowanie liczby
-                x = net.feedforward(np.reshape(cell_1, (784, 1)))  # rozpoznanie - 1 algorytm
-                x[0] = 0
-                maybe_digit = np.argmax(x)
-
-                if list(x[maybe_digit])[0] / sum(x) > 0.8:  # czy nie pusta komorka
-                    # cell = cv2.dilate(cell, (3, 3))
-                    # rozpoznawanie liczb pisanych, 2 algorytm
+                print cell_1.mean()
+# kolejny sposob na rozpoznanie pustych wierszy - obliczac jasnosc/ciemnosc poszczegolnych komorek
+                if cell_1.mean() > 40.0:
+                    cell = cv2.dilate(cell, (3, 3))
                     cell = self.clean_2(cell)
                     self.helpers.show(cell, 'After clean_2')
                     cell_hog = hog(cell, orientations=9, pixels_per_cell=(14, 14),

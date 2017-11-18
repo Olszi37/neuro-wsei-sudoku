@@ -12,22 +12,6 @@ from scripts.train import NeuralNetwork
 from scripts.sudoku_str import SudokuStr
 
 
-# def create_net(rel_path):
-#     with open(os.getcwd() + rel_path) as in_file:
-#         sizes, biases, wts = pickle.load(in_file)
-#     return NeuralNetwork(customValues=(sizes, biases, wts))
-
-
-# def get_cells(image_path):  # yields 9 * 9 = 81 cells
-#     net = create_net(rel_path='/networks/net')
-#     for row in Extractor(os.path.abspath(image_path)).cells:
-#         for cell in row:
-#             x = net.feedforward(np.reshape(cell, (784, 1)))
-#             x[0] = 0
-#             digit = np.argmax(x)
-#             yield str(cell) if list(x[digit])[0] / sum(x) > 0.8 else '.'
-
-
 def get_cells(image_path):  # yields 9 * 9 = 81 cells
     for row in Extractor(os.path.abspath(image_path)).cells:
         for cell in row:
