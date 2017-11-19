@@ -1,27 +1,20 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 import os
-import pickle
 import sys
 
-import numpy as np
-
 from scripts.sudokuExtractor import Extractor
-from scripts.train import NeuralNetwork
 from scripts.sudoku_str import SudokuStr
 
 
-def get_cells(image_path):  # yields 9 * 9 = 81 cells
+def get_cells(image_path):
+    # manipulacja obrazem, wyciagniecie komorek sudoku i rozpoznanie cyfr
     for row in Extractor(os.path.abspath(image_path)).cells:
         for cell in row:
-            # pobierz i sklej wartosci z komorek do stringa dla algorytmu rozw sudoku
             yield str(cell).replace('[', '').replace(']', '')
 
 
 def snap_sudoku(image_path):
+    # pobranie wyniku rozpoznania cyfr z komorek do obliczenia sudoku
     grid = ''.join(cell for cell in get_cells(image_path))
-    # print grid # printing found digits
     s = SudokuStr(grid)
     print "Finded values: \n", s
     try:

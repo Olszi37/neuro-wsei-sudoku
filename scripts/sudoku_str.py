@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 import sudopy  # see: http://norvig.com/sudopy.shtml
 
 """
@@ -39,6 +36,7 @@ s2 = [[' ', ' ', ' ', ' ', ' ', ' ', '2', ' ', '3'],
 
 
 class SudokuStr(object):
+    # obliczenie sudoku z ciagu tekstu z wartosciami liczbowymi
     def __init__(self, sudoku=s0):
         self.s = self.sudoku_to_str(sudoku)
 
@@ -46,9 +44,9 @@ class SudokuStr(object):
     def sudoku_to_str(sudoku):
         s = ''
         if isinstance(sudoku, str):
-            if '\n' in sudoku:  # a multiline string
+            if '\n' in sudoku:
                 s = ''.join(line.lstrip() for line in sudoku.splitlines())
-            else:               # a single line string
+            else:
                 s = sudoku
         elif isinstance(sudoku, (list, tuple)):
             if len(sudoku) == 9:
